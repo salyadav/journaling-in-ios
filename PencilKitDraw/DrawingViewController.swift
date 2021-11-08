@@ -31,6 +31,7 @@ Abstract:
 
 import UIKit
 import PencilKit
+//import UIDogEarGestureRecognizer
 
 class DrawingViewController: UIViewController, PKCanvasViewDelegate, PKToolPickerObserver, UIScreenshotServiceDelegate {
     
@@ -134,6 +135,11 @@ class DrawingViewController: UIViewController, PKCanvasViewDelegate, PKToolPicke
         return true
     }
     
+    override func viewDidLoad() {
+        let dogEarRecognizer = UIDogEarGestureRecognizer(target: self, action: #selector(dogEarGesture(_:)))
+        canvasView.addGestureRecognizer(dogEarRecognizer)
+    }
+    
     // MARK: Actions
     
     /// Action method: Turn finger drawing on or off, but only on devices before iOS 14.0
@@ -166,6 +172,10 @@ class DrawingViewController: UIViewController, PKCanvasViewDelegate, PKToolPicke
 
         // Add the signature drawing to the current canvas drawing.
         setNewDrawingUndoable(canvasView.drawing.appending(signature))
+    }
+    
+    @IBAction func dogEarGesture(_ sender: UIGestureRecognizer) {
+        print("Dog Ear")
     }
     
     // MARK: Navigation
