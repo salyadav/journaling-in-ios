@@ -31,12 +31,17 @@ Abstract:
 
 import UIKit
 import PencilKit
+//import UIDogEarGestureRecognizer
 
-class DrawingViewController: UIViewController, PKCanvasViewDelegate, PKToolPickerObserver, UIScreenshotServiceDelegate {
+class DrawingViewController: UIViewController, PKCanvasViewDelegate, PKToolPickerObserver, UIScreenshotServiceDelegate{
+    
+  
+   
     
     @IBOutlet weak var canvasView: PKCanvasView!
     @IBOutlet var undoBarButtonitem: UIBarButtonItem!
     @IBOutlet var redoBarButtonItem: UIBarButtonItem!
+
     
     var toolPicker: PKToolPicker!
     var signDrawingItem: UIBarButtonItem!
@@ -134,8 +139,16 @@ class DrawingViewController: UIViewController, PKCanvasViewDelegate, PKToolPicke
         return true
     }
     
+    override func viewDidLoad() {
+        let dogEarRecognizer = UIDogEarGestureRecognizer(target: self, action: #selector(dogEarGesture(_:)))
+        canvasView.addGestureRecognizer(dogEarRecognizer)
+
+    }
+    
+    
     // MARK: Actions
     
+  
     /// Action method: Turn finger drawing on or off, but only on devices before iOS 14.0
     @IBAction func toggleFingerPencilDrawing(_ sender: Any) {
         if #available(iOS 14.0, *) { } else {
@@ -166,6 +179,21 @@ class DrawingViewController: UIViewController, PKCanvasViewDelegate, PKToolPicke
 
         // Add the signature drawing to the current canvas drawing.
         setNewDrawingUndoable(canvasView.drawing.appending(signature))
+    }
+    
+    @IBAction func dogEarGesture(_ sender: UIGestureRecognizer) {
+        if sender.state == .ended {
+            let imageName = "fold3.png"
+            let image = UIImage(named: imageName)
+            let imageView = UIImageView(image: image!)
+            imageView.backgroundColor = UIColor.clear
+            imageView.isOpaque = false
+            print(canvasView.bounds.width)
+            imageView.frame = CGRect(x: 1090, y: 0, width: 100, height: 200)
+            self.view.addSubview(imageView)
+            //Imageview on Top of View
+            self.view.bringSubviewToFront(imageView)
+        }
     }
     
     // MARK: Navigation
