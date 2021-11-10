@@ -142,22 +142,13 @@ class DrawingViewController: UIViewController, PKCanvasViewDelegate, PKToolPicke
     override func viewDidLoad() {
         let dogEarRecognizer = UIDogEarGestureRecognizer(target: self, action: #selector(dogEarGesture(_:)))
         canvasView.addGestureRecognizer(dogEarRecognizer)
-//
-//        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(didTap(_:)))
-//        canvasView.addGestureRecognizer(tapRecognizer)
 
     }
     
     
     // MARK: Actions
     
-//    @IBAction func didTap(_ sender: UITapGestureRecognizer) {
-//        if sender.state == .began {
-//            print("helloo")
-//        }
-//       // User tapped at the point above. Do something with that if you want.
-//    }
-    
+  
     /// Action method: Turn finger drawing on or off, but only on devices before iOS 14.0
     @IBAction func toggleFingerPencilDrawing(_ sender: Any) {
         if #available(iOS 14.0, *) { } else {
