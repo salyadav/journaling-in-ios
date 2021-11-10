@@ -33,11 +33,15 @@ import UIKit
 import PencilKit
 //import UIDogEarGestureRecognizer
 
-class DrawingViewController: UIViewController, PKCanvasViewDelegate, PKToolPickerObserver, UIScreenshotServiceDelegate {
+class DrawingViewController: UIViewController, PKCanvasViewDelegate, PKToolPickerObserver, UIScreenshotServiceDelegate{
+    
+  
+   
     
     @IBOutlet weak var canvasView: PKCanvasView!
     @IBOutlet var undoBarButtonitem: UIBarButtonItem!
     @IBOutlet var redoBarButtonItem: UIBarButtonItem!
+
     
     var toolPicker: PKToolPicker!
     var signDrawingItem: UIBarButtonItem!
@@ -138,9 +142,21 @@ class DrawingViewController: UIViewController, PKCanvasViewDelegate, PKToolPicke
     override func viewDidLoad() {
         let dogEarRecognizer = UIDogEarGestureRecognizer(target: self, action: #selector(dogEarGesture(_:)))
         canvasView.addGestureRecognizer(dogEarRecognizer)
+//
+//        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(didTap(_:)))
+//        canvasView.addGestureRecognizer(tapRecognizer)
+
     }
     
+    
     // MARK: Actions
+    
+//    @IBAction func didTap(_ sender: UITapGestureRecognizer) {
+//        if sender.state == .began {
+//            print("helloo")
+//        }
+//       // User tapped at the point above. Do something with that if you want.
+//    }
     
     /// Action method: Turn finger drawing on or off, but only on devices before iOS 14.0
     @IBAction func toggleFingerPencilDrawing(_ sender: Any) {
@@ -175,7 +191,18 @@ class DrawingViewController: UIViewController, PKCanvasViewDelegate, PKToolPicke
     }
     
     @IBAction func dogEarGesture(_ sender: UIGestureRecognizer) {
-        print("Dog Ear")
+        if sender.state == .ended {
+            let imageName = "fold3.png"
+            let image = UIImage(named: imageName)
+            let imageView = UIImageView(image: image!)
+            imageView.backgroundColor = UIColor.clear
+            imageView.isOpaque = false
+            print(canvasView.bounds.width)
+            imageView.frame = CGRect(x: 1090, y: 0, width: 100, height: 200)
+            self.view.addSubview(imageView)
+            //Imageview on Top of View
+            self.view.bringSubviewToFront(imageView)
+        }
     }
     
     // MARK: Navigation
