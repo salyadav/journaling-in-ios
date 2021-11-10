@@ -31,7 +31,6 @@ Abstract:
 
 import UIKit
 import PencilKit
-//import UIDogEarGestureRecognizer
 
 class DrawingViewController: UIViewController, PKCanvasViewDelegate, PKToolPickerObserver, UIScreenshotServiceDelegate {
     
@@ -174,8 +173,11 @@ class DrawingViewController: UIViewController, PKCanvasViewDelegate, PKToolPicke
         setNewDrawingUndoable(canvasView.drawing.appending(signature))
     }
     
+    //FIXME
     @IBAction func dogEarGesture(_ sender: UIGestureRecognizer) {
-        print("Dog Ear")
+        if sender.state == .ended {
+            //find location of the gester start
+        }
     }
     
     // MARK: Navigation
