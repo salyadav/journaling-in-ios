@@ -32,7 +32,8 @@ Abstract:
 import UIKit
 import PencilKit
 
-class DrawingViewController: UIViewController, PKCanvasViewDelegate, PKToolPickerObserver, UIScreenshotServiceDelegate {
+
+class DrawingViewController: UIViewController, PKCanvasViewDelegate, PKToolPickerObserver, UIScreenshotServiceDelegate, UIGestureRecognizerDelegate{
     
     @IBOutlet weak var canvasView: PKCanvasView!
     @IBOutlet var undoBarButtonitem: UIBarButtonItem!
@@ -134,6 +135,17 @@ class DrawingViewController: UIViewController, PKCanvasViewDelegate, PKToolPicke
         return true
     }
     
+    override func viewDidLoad() {
+    
+        let LRecognizer = LGestureRecognizer(target: self, action: #selector(lGesture(_:)))
+        LRecognizer.cancelsTouchesInView = false
+        
+        LRecognizer.delegate = self
+        canvasView.addGestureRecognizer(LRecognizer)
+
+    }
+    
+    
     // MARK: Actions
     
     /// Action method: Turn finger drawing on or off, but only on devices before iOS 14.0
@@ -167,6 +179,72 @@ class DrawingViewController: UIViewController, PKCanvasViewDelegate, PKToolPicke
         // Add the signature drawing to the current canvas drawing.
         setNewDrawingUndoable(canvasView.drawing.appending(signature))
     }
+    
+    
+    @IBAction func lGesture(_ sender: LGestureRecognizer) {
+        if sender.state == .recognized {
+          
+           // the rectangle width
+           let rectWidth = (sender.finalTouchPoint.x-sender.initialTouchPoint.x)
+            
+           // the rectangle height.
+           let rectHeight = (sender.cornerTouchPoint.y-sender.initialTouchPoint.y)
+            
+           let rectX = (sender.initialTouchPoint.x)
+           let rectY = sender.initialTouchPoint.y
+           let rectFrame: CGRect = CGRect(x: CGFloat(rectX), y: CGFloat(rectY), width:CGFloat(rectWidth), height:CGFloat(rectHeight))
+            
+           // Create a UIView object which use above CGRect object.
+           let rectView = UIImageView(frame: rectFrame)
+
+           // Set UIView background color.
+
+           rectView.layer.borderWidth = 1
+           rectView.layer.borderColor = UIColor.black.cgColor
+            
+          
+            for index in 1...Int(5) - 1
+                    {
+                        let innerRectWidth = (rectWidth) - (CGFloat(index)*rectWidth/5)
+                        let innerRectHeight = rectHeight
+                        let innerRectX = (CGFloat(index)*rectWidth/5)
+                        let innerRectFrame: CGRect = CGRect(x:CGFloat(innerRectX), y:0, width:CGFloat(innerRectWidth), height:CGFloat(innerRectHeight))
+                        let innerRectView1 = UIImageView(frame: innerRectFrame)
+                        innerRectView1.layer.borderWidth = 1
+                        innerRectView1.layer.borderColor = UIColor.black.cgColor
+                        rectView.addSubview(innerRectView1)
+                    }
+            
+            for index in 1...Int(5) - 1
+                    {
+                        let innerRectWidth = rectWidth
+                        let innerRectHeight = (rectHeight) - (CGFloat(index)*rectHeight/5)
+//                        let innerRectFrame: CGRect = CGRect(x:CGFloat(rectX), y:CGFloat(rectY), width:CGFloat(innerRectWidth), height:CGFloat(innerRectHeight))
+                       let innerRectFrame: CGRect = CGRect(x:0, y:0, width:CGFloat(innerRectWidth), height:CGFloat(innerRectHeight))
+                        let innerRectView2 = UIImageView(frame: innerRectFrame)
+                        innerRectView2.layer.borderWidth = 1
+                        innerRectView2.layer.borderColor = UIColor.black.cgColor
+                        rectView.addSubview(innerRectView2)
+                    }
+          
+            rectView.isUserInteractionEnabled = true;
+            rectView.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:))))
+         // Add above UIView object as the main view's subview.
+            canvasView.addSubview(rectView)
+            
+           
+            
+        }
+    }
+    
+    @IBAction func handlePan(_ sender:UIPanGestureRecognizer) {
+      
+        let translation = sender.translation(in: self.view)
+        if let view = sender.view { view.center = CGPoint(x:view.center.x + translation.x, y:view.center.y + translation.y) }
+        sender.setTranslation(CGPoint.zero, in:self.view)
+    }
+    
+
     
     // MARK: Navigation
     
