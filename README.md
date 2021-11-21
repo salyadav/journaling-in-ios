@@ -180,3 +180,91 @@ open class LGestureRecognizer : UIGestureRecognizer {
     }
 }
 ```
+
+
+
+```
+//
+//  postItDoubleTap.swift
+//  PencilKitDraw
+//
+//  Created by Saranya Arun Menon on 11/20/21.
+//  Copyright © 2021 Apple. All rights reserved.
+//
+
+import Foundation
+import Foundation
+import UIKit
+import UIKit.UIGestureRecognizerSubclass
+
+
+open class PostItDoubleTapRecognizer : UITapGestureRecognizer {
+    
+    var newPoint : CGPoint = CGPoint.init(x: 0, y: 0)
+    var startTime : Date = Date()
+    var endTime : Date = Date()
+    private var touchedPoints = [CGPoint]()
+    private var trackedTouches: Set<UITouch> = []
+    
+    open override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
+        super.touchesBegan(touches, with: event)
+       
+        //state = .began
+        
+        for touch in touches {
+                  if self.trackedTouches.count < 2 {
+                      self.trackedTouches.insert(touch)
+                      startTime = Date()
+                  }
+                   
+                   if self.trackedTouches.count == 2 {
+                      // print("began!")
+                       endTime = Date()
+                      // state = .began
+                       let newTouch = touches.first
+                       newPoint = (newTouch?.location(in: self.view))!
+                   }
+           
+               }
+        
+     //   print(self.trackedTouches.count)
+       
+    }
+    
+    open override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent) {
+        super.touchesMoved(touches, with: event)
+        state = .changed
+    }
+    
+    open override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) {
+        super.touchesEnded(touches, with: event)
+        
+        if self.trackedTouches.count == 2 {
+           
+            if(endTime.timeIntervalSince(startTime) < (2e-06)) {
+                state = .recognized
+                print("interval")
+                print(endTime.timeIntervalSince(startTime))
+            }
+            else {
+                state = .failed
+            }
+        }
+        else {
+            print("failed")
+            state = .failed
+        }
+    }
+    
+    open override func reset() {
+        
+        if self.trackedTouches.count == 2 {
+          self.trackedTouches = []
+                super.reset()
+         
+      }
+    }
+    
+    
+}
+```
